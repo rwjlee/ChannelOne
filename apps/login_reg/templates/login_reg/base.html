@@ -1,0 +1,38 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>ChannelOne</title>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="{% static 'login_reg/lib/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'login_reg/lib/font-awesome.min.css' %}">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'login_reg/css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'login_reg/css/default.css' %}">
+
+
+</head>
+
+<body>
+    {% include 'login_reg/navbar.html' %}
+    {% block body %} {% endblock %}
+
+
+    <script src="{% static 'login_reg/lib/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'login_reg/lib/popper.min.js' %}"></script>
+    <script src="{% static 'login_reg/lib/bootstrap.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+
+    <script src="{% static 'login_reg/js/utilities.js' %}"></script>
+
+    {% block scripts %} {% endblock %}
+</body>
+
+</html>

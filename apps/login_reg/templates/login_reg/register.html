@@ -1,0 +1,71 @@
+{% extends 'login_reg/base.html' %} {% block body %}
+
+<div class="card my-4 col-6 offset-3 p-5">
+    <h3 class="text-center">Register</h3>
+    <form method="POST" action="{% url 'login_reg:authenticate_ajax' auth_for='register' %}" id="register-form">
+        <div class="form-group">
+            <label for="inputEmail1">Email Address</label>
+            <input type="email" class="form-control" id="inputEmail1" aria-describedby="emailHelp" placeholder="Enter Email Address"
+                name="html_email">
+        </div>
+        <div class="form-group">
+            <label for="inputUserName1">Full Name</label>
+            <input type="text" class="form-control" id="inputUserName1" aria-describedby="usernameHelp" placeholder="Enter UserName"
+                name="html_username">
+        </div>
+        <div class="form-group">
+            <label for="inputPassword1">Password</label>
+            <input type="password" class="form-control" id="inputPassword1" placeholder="Create Password" name="html_password">
+        </div>
+        <div class="form-group">
+            <label for="inputPassword2">Confirm Password</label>
+            <input type="password" class="form-control" id="inputPassword2" placeholder="Confirm Password" name="html_confirm">
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+        <i class="fa fa-spinner ml-3 fa-spin" id="spinner" style="display: none"></i>
+    </form>
+
+    <div class="my-3 messages">
+        
+    </div>
+</div>
+
+{% endblock %} {% block scripts %}
+<script>
+    let beforeAjaxSend = function (xhr, settings) {
+        let csrftoken = Cookies.get('csrftoken');
+        if (!this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    };
+
+    $(document).ready(function () {
+
+        $("#register-form").submit(function (event) {
+            event.preventDefault();
+            $(".alert").remove();
+            $("#spinner").show();
+
+            let formFields = formToJson("#register-form");
+
+            formFields.html_password = encryptPassword(formFields.html_password);
+            formFields.html_confirm = encryptPassword(formFields.html_confirm);
+
+            $.ajax({
+                beforeSend: beforeAjaxSend,
+                type: "POST",
+                url: $("#register-form").attr("action"),
+                data: formFields,
+                success: function (response) {
+                    console.log(formFields)
+                    $("#spinner").hide();
+                    if (response.errors) {
+                        displayErrors(".messages", response.errors);
+                    } else if (response.url) {
+                        window.location = (response.url);
+                    }
+                }
+            });
+        });
+    });
+</script> {% endblock %}

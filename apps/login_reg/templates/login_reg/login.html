@@ -1,0 +1,63 @@
+{% extends 'login_reg/base.html' %} {% block body %}
+
+<div class="card my-4 col-6 offset-3 p-5">
+    <h3 class="text-center">Login</h3>
+    <form method="POST" action="{% url 'login_reg:authenticate_ajax' auth_for='login' %}" id="login-form">
+        <div class="form-group">
+            <label for="inputEmail1">Email</label>
+            <input type="email" class="form-control" id="inputEmail1" aria-describedby="emailHelp" placeholder="Enter Email" name="html_email"
+                value="">
+        </div>
+        <div class="form-group">
+            <label for="inputPassword1">Password</label>
+            <input type="password" class="form-control" id="inputPassword1" placeholder="Enter Password" name="html_password" value="">
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+        <i class="fa fa-spinner ml-3 fa-spin" id="spinner" style="display: none"></i>
+    </form>
+    <div class="my-3 messages">
+        
+    </div>
+</div>
+
+
+{% endblock %} {% block scripts %}
+<script>
+
+    let beforeAjaxSend = function (xhr, settings) {
+        let csrftoken = Cookies.get('csrftoken');
+        if (!this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    };
+
+    $(document).ready(function () {
+
+
+        $("#login-form").submit(function (event) {
+            event.preventDefault();
+            $(".alert").remove();
+            $("#spinner").show();
+
+            let formFields = formToJson("#login-form");
+            formFields.html_password = encryptPassword(formFields.html_password);
+
+            $.ajax({
+                beforeSend: beforeAjaxSend,
+                type: "POST",
+                url: $("#login-form").attr("action"),
+                data: formFields,
+                success: function (response) {
+                    $("#spinner").hide();
+                    if (response.errors) {
+                        displayErrors(".messages", response.errors);
+                    } else if (response.url) {
+                        window.location = response.url;
+                    }
+                }
+            });
+        });
+    });
+
+
+</script> {% endblock %}
